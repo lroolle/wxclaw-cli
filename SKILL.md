@@ -1,6 +1,6 @@
 ---
 name: wxclawbot-send
-version: 0.4.0
+version: 0.4.1
 description: >
   Send messages to WeChat users via wxclawbot CLI. Supports text, images,
   video, and file attachments. Use when: sending messages to WeChat users,
