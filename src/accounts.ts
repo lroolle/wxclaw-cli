@@ -6,6 +6,11 @@ import type { AccountData, ResolvedAccount } from "./types.js";
 
 const DEFAULT_BASE_URL = "https://ilinkai.weixin.qq.com";
 
+function extractBotId(token: string): string {
+  const colonIdx = token.indexOf(":");
+  return colonIdx > 0 ? token.substring(0, colonIdx) : "";
+}
+
 function stateDir(): string {
   return (
     process.env.OPENCLAW_STATE_DIR?.trim() ||
@@ -54,6 +59,13 @@ function scanAccountsDir(): string[] {
 }
 
 export function loadAccountData(accountId: string): AccountData | null {
+  if (
+    accountId.includes("/") ||
+    accountId.includes("\\") ||
+    accountId.includes("..")
+  ) {
+    return null;
+  }
   const filePath = path.join(accountsDir(), `${accountId}.json`);
   try {
     const raw = fs.readFileSync(filePath, "utf-8");
@@ -72,6 +84,7 @@ export function resolveAccount(accountId?: string): ResolvedAccount | null {
       id: "env",
       token: envToken,
       baseUrl: envBaseUrl || DEFAULT_BASE_URL,
+      botId: extractBotId(envToken),
     };
   }
 
@@ -86,6 +99,7 @@ export function resolveAccount(accountId?: string): ResolvedAccount | null {
     id: targetId,
     token: data.token,
     baseUrl: data.baseUrl?.trim() || DEFAULT_BASE_URL,
+    botId: extractBotId(data.token),
   };
 }
 

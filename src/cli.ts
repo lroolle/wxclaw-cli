@@ -59,6 +59,7 @@ program
       const client = new WxClawClient({
         baseUrl: account.baseUrl,
         token: account.token,
+        botId: account.botId,
       });
 
       try {
