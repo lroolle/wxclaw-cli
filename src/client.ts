@@ -33,11 +33,18 @@ export class WxClawClient {
   private baseUrl: string;
   private token: string;
   private botId: string;
+  private contextToken?: string;
 
-  constructor(opts: { baseUrl: string; token: string; botId?: string }) {
+  constructor(opts: {
+    baseUrl: string;
+    token: string;
+    botId?: string;
+    contextToken?: string;
+  }) {
     this.baseUrl = opts.baseUrl.replace(/\/+$/, "");
     this.token = opts.token;
     this.botId = opts.botId ?? "";
+    this.contextToken = opts.contextToken;
   }
 
   async sendText(
@@ -93,31 +100,37 @@ export class WxClawClient {
     items: MessageItem[],
     clientId: string,
   ): Promise<SendResult> {
-    const req: SendMessageReq = {
-      msg: {
-        from_user_id: this.botId,
-        to_user_id: to,
-        client_id: clientId,
-        message_type: MessageType.BOT,
-        message_state: MessageState.FINISH,
-        item_list: items,
-      },
-      base_info: { channel_version: VERSION },
-    };
+    let lastClientId = clientId;
 
-    const resp = await this.post<Record<string, unknown>>(
-      "/ilink/bot/sendmessage",
-      req,
-    );
+    for (const item of items) {
+      lastClientId = crypto.randomUUID();
+      const req: SendMessageReq = {
+        msg: {
+          from_user_id: this.botId,
+          to_user_id: to,
+          client_id: lastClientId,
+          message_type: MessageType.BOT,
+          message_state: MessageState.FINISH,
+          item_list: [item],
+          context_token: this.contextToken,
+        },
+        base_info: { channel_version: VERSION },
+      };
 
-    const ret = typeof resp.ret === "number" ? resp.ret : 0;
-    if (ret !== 0) {
-      const hint = KNOWN_ERRORS[ret] ?? "";
-      const detail = hint ? ` (${hint})` : "";
-      return { ok: false, to, clientId, error: `ret=${ret}${detail}` };
+      const resp = await this.post<Record<string, unknown>>(
+        "/ilink/bot/sendmessage",
+        req,
+      );
+
+      const ret = typeof resp.ret === "number" ? resp.ret : 0;
+      if (ret !== 0) {
+        const hint = KNOWN_ERRORS[ret] ?? "";
+        const detail = hint ? ` (${hint})` : "";
+        return { ok: false, to, clientId: lastClientId, error: `ret=${ret}${detail}` };
+      }
     }
 
-    return { ok: true, to, clientId };
+    return { ok: true, to, clientId: lastClientId };
   }
 
   private async post<T>(endpoint: string, body: unknown): Promise<T> {

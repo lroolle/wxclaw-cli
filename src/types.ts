@@ -105,4 +105,5 @@ export interface ResolvedAccount {
   baseUrl: string;
   botId: string;
   defaultTo?: string;
+  contextToken?: string;
 }

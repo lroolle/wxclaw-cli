@@ -1,6 +1,6 @@
 ---
 name: wxclawbot-send
-version: 0.4.2
+version: 0.5.0
 description: >
   Send messages to WeChat users via wxclawbot CLI. Supports text, images,
   video, and file attachments. Use when: sending messages to WeChat users,
@@ -107,6 +107,18 @@ Each file contains `token`, `baseUrl`, `userId` (default `--to` target).
 - Account ID changes when openclaw-weixin is upgraded or re-registers
 - `--to` defaults to the `userId` in the account file (the bound user)
 - If `WXCLAW_TOKEN` env var is set, it overrides file-based discovery
+
+### Context Token (Proactive Push)
+
+WeChat requires a `context_token` to push messages proactively. Without it,
+messages sit on the server until the user opens the chat.
+
+The CLI reads `{accountId}.context-tokens.json` alongside the account file.
+This file is maintained by openclaw-weixin and maps `userId → contextToken`.
+No manual setup needed -- openclaw-weixin populates it when users message the bot.
+
+If context_token is missing (new user, token expired), messages still send
+successfully (`ok:true`) but won't push as notifications.
 
 After upgrading openclaw-weixin, always verify with `wxclawbot accounts --json`.
 

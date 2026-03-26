@@ -80,6 +80,21 @@ function resolveBotId(data: AccountData): string {
   return data.userId?.trim() || extractBotId(data.token ?? "");
 }
 
+function loadContextTokens(
+  accountId: string,
+): Record<string, string> {
+  const filePath = path.join(
+    accountsDir(),
+    `${accountId}.context-tokens.json`,
+  );
+  try {
+    const raw = fs.readFileSync(filePath, "utf-8");
+    return JSON.parse(raw) as Record<string, string>;
+  } catch {
+    return {};
+  }
+}
+
 export function resolveAccount(accountId?: string): ResolvedAccount | null {
   const envToken = process.env.WXCLAW_TOKEN?.trim();
   const envBaseUrl = process.env.WXCLAW_BASE_URL?.trim();
@@ -100,12 +115,17 @@ export function resolveAccount(accountId?: string): ResolvedAccount | null {
   const data = loadAccountData(targetId);
   if (!data?.token) return null;
 
+  const defaultTo = data.userId?.trim() || undefined;
+  const contextTokens = loadContextTokens(targetId);
+  const contextToken = defaultTo ? contextTokens[defaultTo] : undefined;
+
   return {
     id: targetId,
     token: data.token,
     baseUrl: data.baseUrl?.trim() || DEFAULT_BASE_URL,
     botId: resolveBotId(data),
-    defaultTo: data.userId?.trim() || undefined,
+    defaultTo,
+    contextToken,
   };
 }
 

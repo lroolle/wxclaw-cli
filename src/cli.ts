@@ -88,6 +88,7 @@ program
         baseUrl: account.baseUrl,
         token: account.token,
         botId: account.botId,
+        contextToken: account.contextToken,
       });
 
       try {
