@@ -3,8 +3,8 @@
 ## TypeScript Usage
 
 ```typescript
-import { WxClawClient } from "@herai/wxclaw-cli";
-import { resolveAccount } from "@herai/wxclaw-cli/accounts";
+import { WxClawClient } from "@claw-lab/wxclawbot-cli";
+import { resolveAccount } from "@claw-lab/wxclawbot-cli/accounts";
 
 const account = resolveAccount();
 const client = new WxClawClient({
@@ -28,5 +28,5 @@ bound user ID (default --to target).
 
 | Export | Module |
 |--------|--------|
-| `@herai/wxclaw-cli` | `WxClawClient` class |
-| `@herai/wxclaw-cli/accounts` | `resolveAccount()`, account discovery |
+| `@claw-lab/wxclawbot-cli` | `WxClawClient` class |
+| `@claw-lab/wxclawbot-cli/accounts` | `resolveAccount()`, account discovery |

@@ -1,6 +1,6 @@
 ---
 name: wxclawbot-send
-version: 0.3.0
+version: 0.4.0
 description: >
   Send messages to WeChat users via wxclawbot CLI. Supports text, images,
   video, and file attachments. Use when: sending messages to WeChat users,
@@ -17,7 +17,7 @@ metadata:
     primaryEnv: WXCLAW_TOKEN
     install:
       - kind: node
-        package: "@herai/wxclawbot-cli"
+        package: "@claw-lab/wxclawbot-cli"
         bins: [wxclawbot]
     os: [macos, linux]
     envVars:
@@ -35,13 +35,13 @@ metadata:
 
 # wxclawbot-send
 
-Send text, images, video, and files to WeChat users via `wxclawbot` CLI (`@herai/wxclawbot-cli`).
+Send text, images, video, and files to WeChat users via `wxclawbot` CLI (`@claw-lab/wxclawbot-cli`).
 For AI agents, scripts, and cron jobs.
 
 ## Prerequisites
 
 - Node.js >= 20
-- `npm install -g @herai/wxclawbot-cli`
+- `npm install -g @claw-lab/wxclawbot-cli`
 - openclaw-weixin account logged in (credentials at `~/.openclaw/openclaw-weixin/accounts/`)
 
 Verify: `wxclawbot accounts --json`

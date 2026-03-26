@@ -1,6 +1,6 @@
-# @herai/wxclawbot-cli
+# @claw-lab/wxclawbot-cli
 
-[English](./README.en.md) | [npm](https://www.npmjs.com/package/@herai/wxclawbot-cli) | [GitHub](https://github.com/lroolle/wxclawbot-cli) | [ClawHub](https://clawhub.ai/lroolle/wxclawbot-send)
+[English](./README.en.md) | [npm](https://www.npmjs.com/package/@claw-lab/wxclawbot-cli) | [GitHub](https://github.com/lroolle/wxclawbot-cli) | [ClawHub](https://clawhub.ai/lroolle/wxclawbot-send)
 
 让你的 AI agent 主动给微信用户发消息。文本、图片、视频、文件，想发就发。
 
@@ -18,9 +18,9 @@
 把下面这段直接发给你的龙虾就行：
 
 ```
-装个技能让你能主动给我发微信：clawhub install wxclawbot-send
+装个技能让你能主动给我发微信，先装 CLI：npm install -g @claw-lab/wxclawbot-cli
 
-npm 包：https://www.npmjs.com/package/@herai/wxclawbot-cli
+npm 包：https://www.npmjs.com/package/@claw-lab/wxclawbot-cli
 源码：https://github.com/lroolle/wxclawbot-cli
 
 装好了告诉我。
@@ -132,8 +132,8 @@ export WXCLAW_BASE_URL="https://ilinkai.weixin.qq.com"
 ## 编程接口
 
 ```typescript
-import { WxClawClient } from "@herai/wxclawbot-cli";
-import { resolveAccount } from "@herai/wxclawbot-cli/accounts";
+import { WxClawClient } from "@claw-lab/wxclawbot-cli";
+import { resolveAccount } from "@claw-lab/wxclawbot-cli/accounts";
 
 const account = resolveAccount();
 const client = new WxClawClient({
@@ -150,7 +150,7 @@ await client.sendFile("user@im.wechat", "./photo.jpg", { text: "请查收" });
 
 ## 相关链接
 
-- [npm](https://www.npmjs.com/package/@herai/wxclawbot-cli)
+- [npm](https://www.npmjs.com/package/@claw-lab/wxclawbot-cli)
 - [GitHub](https://github.com/lroolle/wxclawbot-cli)
 - [ClawHub](https://clawhub.ai/lroolle/wxclawbot-send) -- `clawhub install wxclawbot-send`
 - [龙虾接入微信教程](https://mp.weixin.qq.com/s/nYDQ1obQEHe1WavGpNzasQ) -- 先看这个搞定基础接入

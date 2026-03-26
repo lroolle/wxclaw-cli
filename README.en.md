@@ -1,6 +1,6 @@
-# @herai/wxclawbot-cli
+# @claw-lab/wxclawbot-cli
 
-[简体中文](./README.md) | [npm](https://www.npmjs.com/package/@herai/wxclawbot-cli) | [GitHub](https://github.com/lroolle/wxclawbot-cli) | [ClawHub](https://clawhub.ai/lroolle/wxclawbot-send)
+[简体中文](./README.md) | [npm](https://www.npmjs.com/package/@claw-lab/wxclawbot-cli) | [GitHub](https://github.com/lroolle/wxclawbot-cli) | [ClawHub](https://clawhub.ai/lroolle/wxclawbot-send)
 
 Let your AI agent proactively send WeChat messages. Text, images, video, files -- whatever you need.
 
@@ -19,9 +19,9 @@ WeChat bots can only reply. They can't initiate. That's like having a secretary 
 Send this to your OpenClaw agent (Lobster). That's the whole install process:
 
 ```
-Install a skill so you can proactively WeChat me: clawhub install wxclawbot-send
+Install a skill so you can proactively WeChat me: npm install -g @claw-lab/wxclawbot-cli
 
-npm: https://www.npmjs.com/package/@herai/wxclawbot-cli
+npm: https://www.npmjs.com/package/@claw-lab/wxclawbot-cli
 Source: https://github.com/lroolle/wxclawbot-cli
 
 Let me know when it's done.
@@ -133,8 +133,8 @@ export WXCLAW_BASE_URL="https://ilinkai.weixin.qq.com"
 ## Programmatic API
 
 ```typescript
-import { WxClawClient } from "@herai/wxclawbot-cli";
-import { resolveAccount } from "@herai/wxclawbot-cli/accounts";
+import { WxClawClient } from "@claw-lab/wxclawbot-cli";
+import { resolveAccount } from "@claw-lab/wxclawbot-cli/accounts";
 
 const account = resolveAccount();
 const client = new WxClawClient({
@@ -151,7 +151,7 @@ See [references/programmatic-api.md](references/programmatic-api.md) for full de
 
 ## Links
 
-- [npm](https://www.npmjs.com/package/@herai/wxclawbot-cli)
+- [npm](https://www.npmjs.com/package/@claw-lab/wxclawbot-cli)
 - [GitHub](https://github.com/lroolle/wxclawbot-cli)
 - [ClawHub](https://clawhub.ai/lroolle/wxclawbot-send) -- `clawhub install wxclawbot-send`
 - [WeChat Integration Tutorial](https://mp.weixin.qq.com/s/nYDQ1obQEHe1WavGpNzasQ) -- start here for the basics

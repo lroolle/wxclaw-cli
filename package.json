@@ -1,6 +1,6 @@
 {
-  "name": "@herai/wxclawbot-cli",
-  "version": "0.3.0",
+  "name": "@claw-lab/wxclawbot-cli",
+  "version": "0.4.0",
   "description": "WeixinClawBot CLI - send text, images, video, and files to WeChat users",
   "type": "module",
   "bin": {
