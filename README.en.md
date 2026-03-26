@@ -1,6 +1,6 @@
 # @herai/wxclawbot-cli
 
-[简体中文](./README.md) | [npm](https://www.npmjs.com/package/@herai/wxclawbot-cli) | [GitHub](https://github.com/lroolle/wxclawbot-cli) | [ClawHub](clawhub://wxclawbot-send)
+[简体中文](./README.md) | [npm](https://www.npmjs.com/package/@herai/wxclawbot-cli) | [GitHub](https://github.com/lroolle/wxclawbot-cli) | [ClawHub](https://clawhub.ai/lroolle/wxclawbot-send)
 
 Let your OpenClaw AI agent proactively send WeChat messages. Text, images, video, files -- whatever you need.
 
@@ -172,7 +172,7 @@ await client.sendFile("user@im.wechat", "./photo.jpg", { text: "Check this" });
 
 - [npm](https://www.npmjs.com/package/@herai/wxclawbot-cli)
 - [GitHub](https://github.com/lroolle/wxclawbot-cli)
-- [ClawHub](clawhub://wxclawbot-send) -- `clawhub install wxclawbot-send`
+- [ClawHub](https://clawhub.ai/lroolle/wxclawbot-send) -- `clawhub install wxclawbot-send`
 - [WeChat Integration Tutorial](https://mp.weixin.qq.com/s/nYDQ1obQEHe1WavGpNzasQ) -- start here for basic setup
 
 ## License

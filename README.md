@@ -1,6 +1,6 @@
 # @herai/wxclawbot-cli
 
-[English](./README.en.md) | [npm](https://www.npmjs.com/package/@herai/wxclawbot-cli) | [GitHub](https://github.com/lroolle/wxclawbot-cli) | [ClawHub](clawhub://wxclawbot-send)
+[English](./README.en.md) | [npm](https://www.npmjs.com/package/@herai/wxclawbot-cli) | [GitHub](https://github.com/lroolle/wxclawbot-cli) | [ClawHub](https://clawhub.ai/lroolle/wxclawbot-send)
 
 让你的 OpenClaw AI agent 主动给微信用户发消息。文本、图片、视频、文件，想发就发。
 
@@ -173,7 +173,7 @@ await client.sendFile("user@im.wechat", "./photo.jpg", { text: "请查收" });
 
 - [npm](https://www.npmjs.com/package/@herai/wxclawbot-cli)
 - [GitHub](https://github.com/lroolle/wxclawbot-cli)
-- [ClawHub](clawhub://wxclawbot-send) -- `clawhub install wxclawbot-send`
+- [ClawHub](https://clawhub.ai/lroolle/wxclawbot-send) -- `clawhub install wxclawbot-send`
 - [龙虾接入微信教程](https://mp.weixin.qq.com/s/nYDQ1obQEHe1WavGpNzasQ) -- 先看这个搞定基础接入
 
 ## 开源许可
