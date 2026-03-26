@@ -4,7 +4,7 @@
   "description": "WeChat ClawBot CLI - proactive messaging for OpenClaw agents",
   "type": "module",
   "bin": {
-    "wxclaw": "./dist/cli.js"
+    "wxclaw": "dist/cli.js"
   },
   "exports": {
     ".": "./dist/client.js",
