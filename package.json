@@ -1,0 +1,30 @@
+{
+  "name": "wxclaw",
+  "version": "0.1.0",
+  "description": "WeChat ClawBot CLI - proactive messaging for OpenClaw agents",
+  "type": "module",
+  "bin": {
+    "wxclaw": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "node --import tsx src/cli.ts",
+    "start": "node dist/cli.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "files": [
+    "dist/",
+    "README.md"
+  ],
+  "dependencies": {
+    "commander": "^13.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.8.0"
+  },
+  "license": "MIT"
+}
