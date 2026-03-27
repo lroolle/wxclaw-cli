@@ -1,6 +1,6 @@
 ---
 name: wxclawbot-send
-version: 0.5.0
+version: 0.5.1
 description: >
   Send messages to WeChat users via wxclawbot CLI. Supports text, images,
   video, and file attachments. Use when: sending messages to WeChat users,
@@ -146,6 +146,25 @@ result=$(wxclawbot send --file ./chart.png --text "Daily metrics" --json)
 | Request timeout | Network issue (15s limit) | Retry |
 
 Rate limits are server-side, shared across all clients on same bot token.
+
+### Structured Transport Errors (v0.5.1+)
+
+When `--json` is used, transport failures include extra fields for automation:
+
+```json
+{"ok":false,"error":"send failed: ...","errorKind":"timeout","retryable":true}
+```
+
+| `errorKind` | Meaning | `retryable` |
+|-------------|---------|-------------|
+| `timeout` | Request exceeded 15s | true |
+| `dns` | DNS resolution failed | true |
+| `connection` | Connection reset / socket hang up | true |
+| `network` | Connection refused / host unreachable / fetch failed | true |
+| `tls` | Certificate or TLS error | false |
+| `unknown` | Unclassified error | false |
+
+Check `retryable` to decide whether to retry or fail fast.
 
 ## Common Pitfalls
 
