@@ -117,7 +117,33 @@ program
         }
       } catch (err) {
         const msg = err instanceof Error ? err.message : String(err);
-        fail(`send failed: ${msg}`, opts.json);
+        const info =
+          err && typeof err === "object" && "info" in err
+            ? (err as {
+                info?: {
+                  kind?: string;
+                  retryable?: boolean;
+                  code?: string;
+                  cause?: string;
+                };
+              }).info
+            : undefined;
+
+        if (opts.json) {
+          console.log(
+            JSON.stringify({
+              ok: false,
+              error: `send failed: ${msg}`,
+              errorKind: info?.kind,
+              retryable: info?.retryable,
+              errorCode: info?.code,
+              cause: info?.cause,
+            }),
+          );
+          process.exit(1);
+        }
+
+        fail(`send failed: ${msg}`, false);
       }
     },
   );
