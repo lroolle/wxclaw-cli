@@ -1,14 +1,14 @@
 ---
 name: wxclawbot-send
-version: 0.5.1
+version: 0.5.2
 description: >
-  Send messages to WeChat users via wxclawbot CLI. Supports text, images,
-  video, and file attachments. Use when: sending messages to WeChat users,
-  notifying WeChat contacts, delivering reports or media to WeChat, pushing
-  notifications via WeChat. Triggers: send wechat, wxclawbot, wechat message,
-  notify wechat, weixin message, wx message, wxclawbot send, push wechat,
-  send image wechat, send file wechat. DO NOT TRIGGER when: sending email,
-  SMS, Slack, Teams, Telegram, or other non-WeChat messages.
+  主动给微信用户发消息（文本、图片、视频、文件）。微信机器人默认只能被动回复，
+  这个技能让 agent 能主动推送消息到用户微信。
+  Use when: 主动发微信, 定时提醒, 告警通知, 推送报告, 发图片/文件到微信,
+  proactive WeChat message, push notification to WeChat, send image/file to WeChat.
+  Triggers: 发微信, 微信通知, 微信提醒, 推送微信, wxclawbot, send wechat,
+  wechat message, weixin message, wx message, push wechat, send image wechat.
+  DO NOT TRIGGER when: 发邮件, 发短信, Slack, Teams, Telegram 等非微信消息。
 metadata:
   openclaw:
     requires:
@@ -23,10 +23,10 @@ metadata:
     envVars:
       - name: WXCLAW_TOKEN
         required: false
-        description: "Override bot token (bot@im.bot:your-token)"
+        description: "覆盖 bot token (bot@im.bot:your-token)"
       - name: WXCLAW_BASE_URL
         required: false
-        description: "Override API endpoint (default: https://ilinkai.weixin.qq.com)"
+        description: "覆盖 API 端点 (默认: https://ilinkai.weixin.qq.com)"
     author: lroolle
     links:
       homepage: https://github.com/lroolle/wxclawbot-cli
@@ -35,60 +35,66 @@ metadata:
 
 # wxclawbot-send
 
-Send text, images, video, and files to WeChat users via `wxclawbot` CLI (`@claw-lab/wxclawbot-cli`).
-For AI agents, scripts, and cron jobs.
+## 这个技能解决什么问题
 
-## Prerequisites
+微信机器人（iLink Bot）只能被动回复用户消息，不能主动发起对话。
+这意味着 agent 没法做定时提醒、告警推送、报告发送等主动触达场景。
+
+这个技能通过 `wxclawbot` CLI 让 agent 能主动给微信用户推送消息，
+包括文本、图片、视频、文件。配合 cron 可实现定时任务。
+
+## 前置条件
 
 - Node.js >= 20
 - `npm install -g @claw-lab/wxclawbot-cli`
-- openclaw-weixin account logged in (credentials at `~/.openclaw/openclaw-weixin/accounts/`)
+- openclaw-weixin 已登录（凭证在 `~/.openclaw/openclaw-weixin/accounts/`）
 
-Verify: `wxclawbot accounts --json`
+验证: `wxclawbot accounts --json`
 
-## Quick Start
+## 快速上手
 
 ```bash
-wxclawbot send --text "Hello" --json
+wxclawbot send --text "消息内容" --json
 wxclawbot send --file ./photo.jpg --json
+wxclawbot send --file ./report.pdf --text "请查收" --json
 ```
 
-## When to Use What
+## 什么时候用什么
 
 ```
-Send text from shell/agent  → wxclawbot send --text "msg" --json
-Send file from shell/agent  → wxclawbot send --file ./path --json
-Send from TypeScript code   → see references/programmatic-api.md
-Check account setup         → wxclawbot accounts --json
+主动发文本消息  → wxclawbot send --text "msg" --json
+主动发文件/图片 → wxclawbot send --file ./path --json
+检查账号状态    → wxclawbot accounts --json
+编程调用        → see references/programmatic-api.md
 ```
 
-## Commands
+## 命令参考
 
 ### send
 
 ```bash
 wxclawbot send --text "message" --json
-wxclawbot send --to "user@im.wechat" --text "hi" --json
+wxclawbot send --to "user@im.wechat" --text "你好" --json
 wxclawbot send --file ./photo.jpg --json
-wxclawbot send --file ./report.pdf --text "See attached" --json
+wxclawbot send --file ./report.pdf --text "请查收" --json
 wxclawbot send --file "https://example.com/img.png" --json
-echo "report ready" | wxclawbot send --json
+echo "日报已生成" | wxclawbot send --json
 wxclawbot send --text "test" --dry-run
 ```
 
-| Flag | Description |
-|------|-------------|
-| `--text <msg>` | Message text. `"-"` to explicitly read stdin |
-| `--file <path>` | Local file path or URL (image/video/file) |
-| `--to <userId>` | Target user ID. Default: bound user from account |
-| `--account <id>` | Account ID. Default: first available |
-| `--json` | Structured JSON output on stdout |
-| `--dry-run` | Preview without sending |
+| 参数 | 说明 |
+|------|------|
+| `--text <msg>` | 消息文本。`"-"` 显式读 stdin |
+| `--file <path>` | 本地文件或 URL（图片 / 视频 / 文件） |
+| `--to <userId>` | 目标用户 ID。默认: 账号绑定用户 |
+| `--account <id>` | 指定账号。默认: 第一个可用的 |
+| `--json` | JSON 格式输出。**编程调用必须带上** |
+| `--dry-run` | 预览，不发送 |
 
-Media type is auto-detected by file extension:
-- Image: .png .jpg .jpeg .gif .webp .bmp
-- Video: .mp4 .mov .webm .mkv .avi
-- File: everything else
+媒体类型按扩展名自动识别:
+- 图片: .png .jpg .jpeg .gif .webp .bmp
+- 视频: .mp4 .mov .webm .mkv .avi
+- 文件: 其他所有
 
 ### accounts
 
@@ -96,89 +102,91 @@ Media type is auto-detected by file extension:
 wxclawbot accounts --json
 ```
 
-Returns: `[{"id":"<botId>-im-bot","configured":true,"baseUrl":"..."}]`
+返回: `[{"id":"<botId>-im-bot","configured":true,"baseUrl":"..."}]`
 
-## Account Discovery
+## 账号发现机制
 
-The CLI auto-discovers accounts from `~/.openclaw/openclaw-weixin/accounts/*.json`.
-Each file contains `token`, `baseUrl`, `userId` (default `--to` target).
+CLI 自动从 `~/.openclaw/openclaw-weixin/accounts/*.json` 发现账号。
+每个文件包含 `token`, `baseUrl`, `userId`（默认 `--to` 目标）。
 
-- Bot ID is extracted from the token at runtime (not hardcoded)
-- Account ID changes when openclaw-weixin is upgraded or re-registers
-- `--to` defaults to the `userId` in the account file (the bound user)
-- If `WXCLAW_TOKEN` env var is set, it overrides file-based discovery
+- Bot ID 从 token 运行时提取（不是硬编码的）
+- 账号 ID 会在 openclaw-weixin 升级或重新注册后变化
+- `--to` 默认是账号文件里的 `userId`（绑定用户）
+- 设了 `WXCLAW_TOKEN` 环境变量会覆盖文件发现
 
-### Context Token (Proactive Push)
+### Context Token（主动推送关键）
 
-WeChat requires a `context_token` to push messages proactively. Without it,
-messages sit on the server until the user opens the chat.
+微信要求 `context_token` 才能主动推送消息。没有它，消息会留在服务器上，
+直到用户主动打开聊天窗口才能看到——这就不叫"主动推送"了。
 
-The CLI reads `{accountId}.context-tokens.json` alongside the account file.
-This file is maintained by openclaw-weixin and maps `userId → contextToken`.
-No manual setup needed -- openclaw-weixin populates it when users message the bot.
+CLI 自动读取 `{accountId}.context-tokens.json`（和账号文件同目录）。
+这个文件由 openclaw-weixin 维护，格式是 `userId → contextToken` 的映射。
+不需要手动配置——用户给机器人发过消息后 openclaw-weixin 会自动保存。
 
-If context_token is missing (new user, token expired), messages still send
-successfully (`ok:true`) but won't push as notifications.
+如果 context_token 缺失（新用户、token 过期），消息仍然会发送成功
+（`ok:true`），但不会主动推送通知。
 
-After upgrading openclaw-weixin, always verify with `wxclawbot accounts --json`.
+升级 openclaw-weixin 后，务必用 `wxclawbot accounts --json` 验证。
 
-## Agent Integration
+## Agent 集成
 
-ALWAYS use `--json` when calling programmatically. Parse JSON to determine success.
+编程调用**必须**用 `--json`。解析 JSON 判断是否成功。
 
 ```bash
-result=$(wxclawbot send --text "Your task is done" --json)
-result=$(wxclawbot send --file ./chart.png --text "Daily metrics" --json)
+result=$(wxclawbot send --text "任务完成" --json)
+result=$(wxclawbot send --file ./chart.png --text "每日指标" --json)
 ```
 
-- Success: `{"ok":true,"to":"user@im.wechat","clientId":"..."}`
-- Failure: `{"ok":false,"error":"..."}`
-- Exit codes: 0 = success, 1 = failure
+- 成功: `{"ok":true,"to":"user@im.wechat","clientId":"..."}`
+- 失败: `{"ok":false,"error":"..."}`
+- 退出码: 0 = CLI 执行成功, 1 = 失败
 
-## Error Handling
+注意: exit 0 只代表 CLI 跑完了，不代表消息送达。**看 `ok` 字段**。
 
-| Error | Meaning | Action |
-|-------|---------|--------|
-| `ret=-2` | Rate limited (~7 msgs/5min per bot, shared across ALL clients) | Wait 60-120s, retry. Do NOT tight-loop. |
-| `ret=-14` | Session expired | Re-login via openclaw |
-| No account found | Missing credentials | Run `wxclawbot accounts` to diagnose |
-| CDN upload error | File upload failed | Check file size/format, retry |
-| Request timeout | Network issue (15s limit) | Retry |
+## 错误处理
 
-Rate limits are server-side, shared across all clients on same bot token.
+| 错误 | 含义 | 处理 |
+|------|------|------|
+| `ret=-2` | 频率限制（每 bot 约 7 条 / 5 分钟，所有客户端共享） | 等 60-120 秒重试，别搞紧循环 |
+| `ret=-14` | 会话过期 | 通过 openclaw 重新登录 |
+| No account found | 凭证缺失 | 跑 `wxclawbot accounts` 排查 |
+| CDN upload error | 文件上传失败 | 检查文件大小 / 格式，重试 |
+| Request timeout | 网络问题（15 秒超时） | 重试 |
 
-### Structured Transport Errors (v0.5.1+)
+频率限制是服务端的，同一个 bot token 下所有客户端共享配额。
 
-When `--json` is used, transport failures include extra fields for automation:
+### 结构化传输错误 (v0.5.1+)
+
+`--json` 模式下，传输层失败会包含额外字段:
 
 ```json
 {"ok":false,"error":"send failed: ...","errorKind":"timeout","retryable":true}
 ```
 
-| `errorKind` | Meaning | `retryable` |
-|-------------|---------|-------------|
-| `timeout` | Request exceeded 15s | true |
-| `dns` | DNS resolution failed | true |
-| `connection` | Connection reset / socket hang up | true |
-| `network` | Connection refused / host unreachable / fetch failed | true |
-| `tls` | Certificate or TLS error | false |
-| `unknown` | Unclassified error | false |
+| `errorKind` | 含义 | `retryable` |
+|-------------|------|-------------|
+| `timeout` | 请求超过 15 秒 | true |
+| `dns` | DNS 解析失败 | true |
+| `connection` | 连接重置 / socket hang up | true |
+| `network` | 连接被拒 / 主机不可达 / fetch failed | true |
+| `tls` | 证书或 TLS 错误 | false |
+| `unknown` | 未分类错误 | false |
 
-Check `retryable` to decide whether to retry or fail fast.
+用 `retryable` 字段判断应该重试还是直接失败。
 
-## Common Pitfalls
+## 常见坑
 
-- ALWAYS use `--json` -- without it, output is human-readable and unparseable
-- Check `ok` field in JSON response -- exit 0 means the CLI ran, not that the message was delivered
-- Do not retry rate-limited requests (`ret=-2`) in a tight loop -- wait 5-10s minimum
-- Pipe large text via stdin rather than `--text` to avoid shell quoting issues
-- Files are encrypted and uploaded to WeChat CDN -- large files may take time
+- **必须用 `--json`** —— 不带的话输出是人类可读格式，没法解析
+- **看 `ok` 字段** —— exit 0 只代表 CLI 跑了，不代表消息到了
+- **别紧循环重试 `ret=-2`** —— 至少等 5-10 秒
+- **大文本用 stdin** —— `echo "..." | wxclawbot send --json`，避免 shell 引号问题
+- **文件会加密上传到微信 CDN** —— 大文件可能要等一会
 
-## Environment Variables
+## 环境变量
 
-| Variable | Purpose |
-|----------|---------|
-| `WXCLAW_TOKEN` | Override bot token (`bot@im.bot:your-token`) |
-| `WXCLAW_BASE_URL` | Override API endpoint (default: `https://ilinkai.weixin.qq.com`) |
+| 变量 | 用途 |
+|------|------|
+| `WXCLAW_TOKEN` | 覆盖 bot token (`bot@im.bot:your-token`) |
+| `WXCLAW_BASE_URL` | 覆盖 API 端点 (默认: `https://ilinkai.weixin.qq.com`) |
 
-For programmatic TypeScript usage, see [references/programmatic-api.md](references/programmatic-api.md).
+编程接口详见 [references/programmatic-api.md](references/programmatic-api.md)。
