@@ -12,6 +12,23 @@ import { VERSION } from "./version.js";
 
 const SEND_TIMEOUT_MS = 15_000;
 
+type TransportErrorKind =
+  | "timeout"
+  | "abort"
+  | "dns"
+  | "tls"
+  | "connection"
+  | "network"
+  | "unknown";
+
+export interface TransportErrorInfo {
+  kind: TransportErrorKind;
+  retryable: boolean;
+  message: string;
+  code?: string;
+  cause?: string;
+}
+
 const KNOWN_ERRORS: Record<number, string> = {
   [-2]: "rate limited, try again later",
   [-14]: "session expired, re-login via openclaw",
@@ -22,11 +39,56 @@ function randomUIN(): string {
   return Buffer.from(String(n), "utf-8").toString("base64");
 }
 
+function classifyTransportError(err: unknown): TransportErrorInfo {
+  if (err instanceof Error && err.name === "AbortError") {
+    return {
+      kind: "timeout",
+      retryable: true,
+      message: `request timeout after ${SEND_TIMEOUT_MS}ms`,
+      cause: err.message,
+    };
+  }
+
+  const message = err instanceof Error ? err.message : String(err);
+  const code =
+    err && typeof err === "object" && "code" in err && typeof (err as { code?: unknown }).code === "string"
+      ? ((err as { code: string }).code)
+      : undefined;
+  const cause =
+    err instanceof Error && err.cause != null ? String(err.cause) : undefined;
+  const combined = `${message} ${code ?? ""} ${cause ?? ""}`.toLowerCase();
+
+  if (combined.includes("enotfound") || combined.includes("dns")) {
+    return { kind: "dns", retryable: true, message, code, cause };
+  }
+  if (combined.includes("econnreset") || combined.includes("socket hang up")) {
+    return { kind: "connection", retryable: true, message, code, cause };
+  }
+  if (
+    combined.includes("econnrefused") ||
+    combined.includes("ehostunreach") ||
+    combined.includes("enetunreach") ||
+    combined.includes("network") ||
+    combined.includes("fetch failed")
+  ) {
+    return { kind: "network", retryable: true, message, code, cause };
+  }
+  if (combined.includes("cert") || combined.includes("tls") || combined.includes("ssl")) {
+    return { kind: "tls", retryable: false, message, code, cause };
+  }
+
+  return { kind: "unknown", retryable: false, message, code, cause };
+}
+
 export interface SendResult {
   ok: boolean;
   to: string;
   clientId: string;
   error?: string;
+  retryable?: boolean;
+  errorKind?: string;
+  errorCode?: string;
+  cause?: string;
 }
 
 export class WxClawClient {
@@ -152,7 +214,6 @@ export class WxClawClient {
         body: bodyStr,
         signal: controller.signal,
       });
-      clearTimeout(timer);
 
       const raw = await res.text();
       if (!res.ok) {
@@ -169,11 +230,14 @@ export class WxClawClient {
         );
       }
     } catch (err) {
+      const info = classifyTransportError(err);
+      const detail = [info.message, info.code, info.cause].filter(Boolean).join(" | ");
+      const wrapped = new Error(detail || info.message);
+      wrapped.name = "WxClawTransportError";
+      (wrapped as Error & { info?: TransportErrorInfo }).info = info;
+      throw wrapped;
+    } finally {
       clearTimeout(timer);
-      if (err instanceof Error && err.name === "AbortError") {
-        throw new Error(`request timeout after ${SEND_TIMEOUT_MS}ms`);
-      }
-      throw err;
     }
   }
 }
