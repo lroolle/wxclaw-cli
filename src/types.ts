@@ -71,7 +71,7 @@ export interface SendMsg {
 
 export interface SendMessageReq {
   msg: SendMsg;
-  base_info?: { channel_version?: string };
+  base_info?: { channel_version?: string; bot_agent?: string };
 }
 
 export interface GetUploadUrlReq {
@@ -83,7 +83,7 @@ export interface GetUploadUrlReq {
   filesize: number;
   no_need_thumb: boolean;
   aeskey: string;
-  base_info?: { channel_version?: string };
+  base_info?: { channel_version?: string; bot_agent?: string };
 }
 
 export interface GetUploadUrlResp {

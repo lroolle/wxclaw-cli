@@ -1,6 +1,6 @@
 ---
 name: wxclawbot-send
-version: 0.5.2
+version: 0.6.0
 description: >
   主动给微信用户发消息（文本、图片、视频、文件）。微信机器人默认只能被动回复，
   这个技能让 agent 能主动推送消息到用户微信。

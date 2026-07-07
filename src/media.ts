@@ -2,6 +2,7 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 
+import { buildBaseInfo, protocolHeaders } from "./protocol.js";
 import {
   CDNMediaType,
   ItemType,
@@ -9,7 +10,6 @@ import {
   type GetUploadUrlResp,
   type MessageItem,
 } from "./types.js";
-import { VERSION } from "./version.js";
 
 const CDN_BASE_URL = "https://novac2c.cdn.weixin.qq.com/c2c";
 const API_TIMEOUT_MS = 15_000;
@@ -153,7 +153,7 @@ async function uploadToCdn(opts: {
     filesize: cipherSize,
     no_need_thumb: true,
     aeskey: aesKeyHex,
-    base_info: { channel_version: VERSION },
+    base_info: buildBaseInfo(),
   };
 
   const uin = crypto.randomBytes(4).readUInt32BE(0);
@@ -168,6 +168,7 @@ async function uploadToCdn(opts: {
         AuthorizationType: "ilink_bot_token",
         Authorization: `Bearer ${token}`,
         "X-WECHAT-UIN": uinHeader,
+        ...protocolHeaders(),
       },
       body: JSON.stringify(body),
     },

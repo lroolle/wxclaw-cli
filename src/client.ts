@@ -1,6 +1,7 @@
 import crypto from "node:crypto";
 
 import { readFileOrUrl, uploadFile } from "./media.js";
+import { buildBaseInfo, protocolHeaders } from "./protocol.js";
 import {
   ItemType,
   MessageState,
@@ -8,7 +9,6 @@ import {
   type MessageItem,
   type SendMessageReq,
 } from "./types.js";
-import { VERSION } from "./version.js";
 
 const SEND_TIMEOUT_MS = 15_000;
 
@@ -176,7 +176,7 @@ export class WxClawClient {
           item_list: [item],
           context_token: this.contextToken,
         },
-        base_info: { channel_version: VERSION },
+        base_info: buildBaseInfo(),
       };
 
       const resp = await this.post<Record<string, unknown>>(
@@ -210,6 +210,7 @@ export class WxClawClient {
           AuthorizationType: "ilink_bot_token",
           Authorization: `Bearer ${this.token}`,
           "X-WECHAT-UIN": randomUIN(),
+          ...protocolHeaders(),
         },
         body: bodyStr,
         signal: controller.signal,
